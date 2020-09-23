@@ -12,10 +12,18 @@ For change history for [MOST][3], see [most/CHANGES.md](most/CHANGES.md).
 Changes since 7.0
 -----------------
 
+#### 9/23/20
+  - Update to [MP-Test][1] 7.1.
+  - Update to [MIPS][2] 1.4.
+  - Update to [MP-Opt-Model][27] 3.0.
+
 #### 9/11/20
   - Fix bug in `scale_load()` where only one of multiple dispatchable
     loads at a bus would be scaled.
     *Thanks to Christoph Funke.*
+
+#### 8/26/20
+  - Update to [MP-Opt-Model][27] 2.1.
 
 #### 8/20/20
   - Replace content of Appendix A (MIPS) in User's Manual with
