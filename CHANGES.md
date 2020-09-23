@@ -16,6 +16,20 @@ Changes since 7.0
   - Update to [MP-Test][1] 7.1.
   - Update to [MIPS][2] 1.4.
   - Update to [MP-Opt-Model][27] 3.0.
+  - As part of moving from `have_fcn()` (now deprecated) to the new modular,
+    extensible replacement, `have_feature()` (in MP-Test 7.1 and later),
+    add feature detection functions, defining the following tags for
+    `have_feature()`:
+    - `'e4st'`
+    - `'minopf'`
+    - `'most'`
+    - `'pdipmopf'`
+    - `'regexp_split'`
+    - `'scpdipmopf'`
+    - `'sdp_pf'`
+    - `'smartmarket'`
+    - `'syngrid'`
+    - `'tralmopf'`
 
 #### 9/11/20
   - Fix bug in `scale_load()` where only one of multiple dispatchable
