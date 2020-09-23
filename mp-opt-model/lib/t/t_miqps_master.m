@@ -17,7 +17,7 @@ algs = {'DEFAULT', 'CPLEX', 'MOSEK', 'GUROBI', 'GLPK', 'OT'};
 names = {'DEFAULT', 'CPLEX', 'MOSEK', 'Gurobi', 'glpk', 'intlin/lin/quadprog'};
 check = {[], 'cplex', 'mosek', 'gurobi', 'glpk', 'intlinprog'};
 does_qp = [0 1 1 1 0 0];
-if have_fcn('gurobi') || have_fcn('cplex') || have_fcn('mosek')
+if have_feature('gurobi') || have_feature('cplex') || have_feature('mosek')
     does_qp(1) = 1;
 end
 
@@ -27,13 +27,13 @@ nmiqp = 6;
 t_begin(n*length(algs), quiet);
 
 diff_alg_warn_id = 'optim:linprog:WillRunDiffAlg';
-if have_fcn('quadprog') && have_fcn('quadprog', 'vnum') == 7.005
+if have_feature('quadprog') && have_feature('quadprog', 'vnum') == 7.005
     s1 = warning('query', diff_alg_warn_id);
     warning('off', diff_alg_warn_id);
 end
 
 for k = 1:length(algs)
-    if ~isempty(check{k}) && ~have_fcn(check{k})
+    if ~isempty(check{k}) && ~have_feature(check{k})
         t_skip(n, sprintf('%s not installed', names{k}));
     else
         opt = struct('verbose', 0, 'alg', algs{k});
@@ -53,33 +53,33 @@ for k = 1:length(algs)
                 'num_threads', 0, ...
                 'opt', 0 ) ...
         );
-        if strcmp(names{k}, 'CPLEX')
-%           alg = 0;        %% default uses barrier method with NaN bug in lower lim multipliers
-            alg = 2;        %% use dual simplex
-            mpopt.cplex.lpmethod = alg;
-            mpopt.cplex.qpmethod = min([4 alg]);
-            opt.cplex_opt = cplex_options([], mpopt);
-        end
-        if strcmp(names{k}, 'MOSEK')
-%             sc = mosek_symbcon;
-%             alg = sc.MSK_OPTIMIZER_DUAL_SIMPLEX;    %% use dual simplex
-%             alg = sc.MSK_OPTIMIZER_INTPNT;          %% use interior point
-%             mpopt.mosek.lp_alg = alg;
-            mpopt.mosek.gap_tol = 1e-10;
-%             mpopt.mosek.opts.MSK_DPAR_INTPNT_TOL_PFEAS = 1e-10;
-%             mpopt.mosek.opts.MSK_DPAR_INTPNT_TOL_DFEAS = 1e-10;
-%             mpopt.mosek.opts.MSK_DPAR_INTPNT_TOL_INFEAS = 1e-10;
-%             mpopt.mosek.opts.MSK_DPAR_INTPNT_TOL_REL_GAP = 1e-10;
-            vnum = have_fcn('mosek', 'vnum');
-            if vnum >= 8
-%                 mpopt.mosek.opts.MSK_DPAR_INTPNT_QO_TOL_PFEAS = 1e-10;
-%                 mpopt.mosek.opts.MSK_DPAR_INTPNT_QO_TOL_DFEAS = 1e-10;
-%                 mpopt.mosek.opts.MSK_DPAR_INTPNT_QO_TOL_INFEAS = 1e-10;
-%                 mpopt.mosek.opts.MSK_DPAR_INTPNT_QO_TOL_MU_RED = 1e-10;
-                mpopt.mosek.opts.MSK_DPAR_INTPNT_QO_TOL_REL_GAP = 1e-10;
-            end
-%             opt.verbose = 3;
-            opt.mosek_opt = mosek_options([], mpopt);
+        switch names{k}
+            case 'CPLEX'
+%               alg = 0;        %% default uses barrier method with NaN bug in lower lim multipliers
+                alg = 2;        %% use dual simplex
+                mpopt.cplex.lpmethod = alg;
+                mpopt.cplex.qpmethod = min([4 alg]);
+                opt.cplex_opt = cplex_options([], mpopt);
+            case 'MOSEK'
+%                 sc = mosek_symbcon;
+%                 alg = sc.MSK_OPTIMIZER_DUAL_SIMPLEX;    %% use dual simplex
+%                 alg = sc.MSK_OPTIMIZER_INTPNT;          %% use interior point
+%                 mpopt.mosek.lp_alg = alg;
+                mpopt.mosek.gap_tol = 1e-10;
+%                 mpopt.mosek.opts.MSK_DPAR_INTPNT_TOL_PFEAS = 1e-10;
+%                 mpopt.mosek.opts.MSK_DPAR_INTPNT_TOL_DFEAS = 1e-10;
+%                 mpopt.mosek.opts.MSK_DPAR_INTPNT_TOL_INFEAS = 1e-10;
+%                 mpopt.mosek.opts.MSK_DPAR_INTPNT_TOL_REL_GAP = 1e-10;
+                vnum = have_feature('mosek', 'vnum');
+                if vnum >= 8
+%                     mpopt.mosek.opts.MSK_DPAR_INTPNT_QO_TOL_PFEAS = 1e-10;
+%                     mpopt.mosek.opts.MSK_DPAR_INTPNT_QO_TOL_DFEAS = 1e-10;
+%                     mpopt.mosek.opts.MSK_DPAR_INTPNT_QO_TOL_INFEAS = 1e-10;
+%                     mpopt.mosek.opts.MSK_DPAR_INTPNT_QO_TOL_MU_RED = 1e-10;
+                    mpopt.mosek.opts.MSK_DPAR_INTPNT_QO_TOL_REL_GAP = 1e-10;
+                end
+%                 opt.verbose = 3;
+                opt.mosek_opt = mosek_options([], mpopt);
         end
 
         t = sprintf('%s - 3-d LP : ', names{k});
@@ -230,7 +230,7 @@ for k = 1:length(algs)
     end
 end
 
-if have_fcn('quadprog') && have_fcn('quadprog', 'vnum') == 7.005
+if have_feature('quadprog') && have_feature('quadprog', 'vnum') == 7.005
     warning(s1.state, diff_alg_warn_id);
 end
 

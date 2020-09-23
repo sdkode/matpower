@@ -172,6 +172,17 @@ classdef opt_model < mp_idx_manager
 %                     in the order they were added
 %               .name   - name of the block, e.g. R
 %               .idx    - indices for name, {2,3} => R(2,3)
+%       .prob_type  - used to cache the return value of problem_type()
+%       .soln       - struct containing the output of the solve() method
+%                     with the following fields
+%           .eflag  - exit flag
+%           .output - output struct with the following fields
+%               .alg     - algorithm code of solver used
+%               (others) - solver specific fields
+%           .x      - solution vector
+%           .f      - final (objective) function value
+%           .jac    - final Jacobian matrix (if available, for LEQ/NLEQ probs)
+%           .lambda - Lagrange and Kuhn-Tucker multipliers on constraints
 %       .userdata   - any user defined data
 %           .(user defined fields)
 
@@ -184,12 +195,20 @@ classdef opt_model < mp_idx_manager
 %   See https://github.com/MATPOWER/mp-opt-model for more info.
 
     properties
-        var = [];       %% variables
-        lin = [];       %% linear constraints
-        nle = [];       %% nonlinear equality constraints
-        nli = [];       %% nonlinear inequality constraints
-        qdc = [];       %% quadratic costs
-        nlc = [];       %% general nonlinear costs
+        var;            %% variables
+        lin;            %% linear constraints
+        nle;            %% nonlinear equality constraints
+        nli;            %% nonlinear inequality constraints
+        qdc;            %% quadratic costs
+        nlc;            %% general nonlinear costs
+        prob_type = ''; %% problem type
+        soln = struct( ...  %% results of solve()
+            'eflag', [], ...    %% exit flag
+            'output', [], ...   %% algorithm code & solver-specific fields
+            'x', [], ...        %% solution vector
+            'f', [], ...        %% final (objective) function value
+            'jac', [], ...      %% Jacobian (if available) for LEQ/NLEQ
+            'lambda', [] );     %% constraint shadow prices
     end     %% properties
 
     methods
